@@ -1,6 +1,7 @@
 const UserModel = require('../Models/UserModel');
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken');
+const connection = require('../Config/db');
 
 //Criando função para retornar todos os usuários e enviando para a rota
 exports.getAllUsers = (req, res) => {
@@ -38,14 +39,10 @@ exports.registerUser = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await UserModel.create({ name, email, password: hashedPassword });
-
-    res.status(201).json(newUser);
     
     const query = 'INSERT INTO usuarios (nome, senha, email) VALUES (?, ?, ?)'; //Query do MySQL
     //Inserindo MANUALMENTE dados na tabela (utilizando query acima)
-    connection.query(query, [nome, senha], (err, result) => {
+    connection.query(query, [nome, hashedPassword, email], (err, result) => {
         if (err) { //Tratamento de Erro
             console.error('Erro ao inserir usuário:', err);
             return res.status(500).send('Erro ao inserir usuário');
