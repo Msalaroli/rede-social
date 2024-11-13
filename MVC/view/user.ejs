@@ -7,9 +7,16 @@
 </head>
 <body>
     <form action="/usuarios" method="POST">
-        <input type="text" name="nome"/>
-        <input type="password" name="senha"/>
+        <input type="text" name="nome" placeholder="Nome"/>
+        <input type="password" name="senha" placeholder="Senha"/>
         <button type="submit">Enviar</button>
     </form>
+
+    <h2>Posts</h2>
+    <ul>
+        <% posts.forEach(post => { %>
+            <li><%= post.content %></li>
+        <% }) %>
+    </ul>
 </body>
 </html>
