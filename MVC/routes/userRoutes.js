@@ -4,6 +4,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const { getAllUsers } = require('../Controllers/UserController');
 const PostController = require('../Controllers/PostController');
 const path = require('path');
+const db = require('../Config/db');
 
 const router = express.Router();
 
@@ -16,14 +17,18 @@ router.post('/usuarios', (req, res) => {
     res.send(`Nome: ${nome}, Senha: ${senha}`);
 });
 
-router.get('/usuarios', (req, res) =>{
-    res.sendFile(path.join(__dirname + '/../view/user.html'));
-  });
+router.get('/usuarios', (req, res) => {
+    db.query('SELECT * FROM posts', (err, results) => {
+        if (err) {
+            return res.status(500).send('Erro ao buscar posts');
+        }
+        res.render('user', { posts: results });
+    });
+});
 
 router.get('/users', getAllUsers);
 router.post('/register', UserController.registerUser);
 router.post('/login', UserController.loginUser);
 router.post('/post', authMiddleware.verifyToken, PostController.addPost);
-router.delete('/post/:postId', authMiddleware.verifyToken, PostController.deletePost);
 
 module.exports = router;
