@@ -12,6 +12,12 @@
         <button type="submit">Enviar</button>
     </form>
 
+    <h2>Adicionar Post</h2>
+    <form action="/post" method="POST">
+        <textarea name="content" placeholder="Escreva seu post aqui..."></textarea>
+        <button type="submit">Adicionar Post</button>
+    </form>
+
     <h2>Posts</h2>
     <ul>
         <% posts.forEach(post => { %>
