@@ -9,26 +9,31 @@ const db = require('../Config/db');
 const router = express.Router();
 
 // Routes
-router.post('/usuarios', (req, res) => {
-    const nome = req.body.nome;
-    const senha = req.body.senha;
-
-    // Aqui você pode adicionar a lógica para processar os dados
-    res.send(`Nome: ${nome}, Senha: ${senha}`);
+router.get('/register', (req, res) => {
+    res.render('register');
 });
 
-router.get('/usuarios', (req, res) => {
+router.post('/register', UserController.registerUser);
+
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+router.post('/login', UserController.loginUser);
+
+router.get('/posts', (req, res) => {
     db.query('SELECT * FROM posts', (err, results) => {
         if (err) {
             return res.status(500).send('Erro ao buscar posts');
         }
-        res.render('user', { posts: results });
+        res.render('posts', { posts: results });
     });
 });
 
-router.get('/users', getAllUsers);
-router.post('/register', UserController.registerUser);
-router.post('/login', UserController.loginUser);
+router.get('/addPost', authMiddleware.verifyToken, (req, res) => {
+    res.render('addPost');
+});
+
 router.post('/post', authMiddleware.verifyToken, PostController.addPost);
 
 module.exports = router;
