@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Perfil do Usuário</title>
 </head>
 <body>
-    <form action="/usuarios" method="POST">
-        <input type="text" name="nome" placeholder="Nome"/>
-        <input type="password" name="senha" placeholder="Senha"/>
-        <button type="submit">Enviar</button>
-    </form>
+    <h1>Bem-vindo, <%= user.nome %>!</h1>
 
     <h2>Adicionar Post</h2>
     <form action="/post" method="POST">
-        <textarea name="content" placeholder="Escreva seu post aqui..."></textarea>
+        <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
         <button type="submit">Adicionar Post</button>
     </form>
 
-    <h2>Posts</h2>
+    <h2>Seus Posts</h2>
     <ul>
         <% posts.forEach(post => { %>
             <li><%= post.content %></li>
         <% }) %>
+    </ul>
+
+    <h2>Links Rápidos</h2>
+    <ul>
+        <li><a href="/register">Registrar</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/posts">Listar Posts</a></li>
+        <li><a href="/addPost">Adicionar Novo Post</a></li>
     </ul>
 </body>
 </html>
