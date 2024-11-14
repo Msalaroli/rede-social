@@ -7,10 +7,14 @@
 </head>
 <body>
     <%- include('menu') %>
-    <h2>Adicionar Post</h2>
-    <form action="/post" method="POST">
-        <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
-        <button type="submit">Adicionar Post</button>
-    </form>
+    <% if (user) { %>
+        <h2>Adicionar Post</h2>
+        <form action="/post" method="POST">
+            <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
+            <button type="submit">Adicionar Post</button>
+        </form>
+    <% } else { %>
+        <h2>Por favor, faça login para adicionar um post.</h2>
+    <% } %>
 </body>
 </html>

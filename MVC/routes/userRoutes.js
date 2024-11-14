@@ -5,6 +5,7 @@ const { getAllUsers } = require('../Controllers/UserController');
 const PostController = require('../Controllers/PostController');
 const path = require('path');
 const db = require('../Config/db');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -30,19 +31,40 @@ router.get('/posts', (req, res) => {
     });
 });
 
-router.get('/addPost', authMiddleware.verifyToken, (req, res) => {
-    res.render('addPost');
+router.get('/addPost', (req, res) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.render('addPost', { user: null });
+    }
+
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
+        if (err) {
+            return res.render('addPost', { user: null });
+        }
+        res.render('addPost', { user: decoded });
+    });
 });
 
 router.post('/post', authMiddleware.verifyToken, PostController.addPost);
 
-router.get('/profile', authMiddleware.verifyToken, (req, res) => {
-    const userId = req.user.id;
-    db.query('SELECT * FROM posts WHERE user_id = ?', [userId], (err, results) => {
+router.get('/profile', (req, res) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.render('user', { user: null, posts: [] });
+    }
+
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
         if (err) {
-            return res.status(500).send('Erro ao buscar posts');
+            return res.render('user', { user: null, posts: [] });
         }
-        res.render('user', { user: req.user, posts: results });
+
+        const userId = decoded.id;
+        db.query('SELECT * FROM posts WHERE user_id = ?', [userId], (err, results) => {
+            if (err) {
+                return res.status(500).send('Erro ao buscar posts');
+            }
+            res.render('user', { user: decoded, posts: results });
+        });
     });
 });
 

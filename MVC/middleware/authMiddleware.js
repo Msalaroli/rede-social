@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 exports.verifyToken = (req, res, next) => {
   const token = req.headers['authorization'];
 
-  // Permitir requisições para login e cadastro sem verificar o token
-  if (req.path === '/login' || req.path === '/register') {
+  // Permitir requisições para login, registro e outras páginas públicas sem verificar o token
+  if (req.path === '/login' || req.path === '/register' || req.path === '/posts' || req.path === '/addPost') {
     return next();
   }
 

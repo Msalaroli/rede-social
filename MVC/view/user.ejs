@@ -7,27 +7,23 @@
 </head>
 <body>
     <%- include('menu') %>
-    <h1>Bem-vindo, <%= user.nome %>!</h1>
+    <% if (user) { %>
+        <h1>Bem-vindo, <%= user.nome %>!</h1>
 
-    <h2>Adicionar Post</h2>
-    <form action="/post" method="POST">
-        <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
-        <button type="submit">Adicionar Post</button>
-    </form>
+        <h2>Adicionar Post</h2>
+        <form action="/post" method="POST">
+            <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
+            <button type="submit">Adicionar Post</button>
+        </form>
 
-    <h2>Seus Posts</h2>
-    <ul>
-        <% posts.forEach(post => { %>
-            <li><%= post.content %></li>
-        <% }) %>
-    </ul>
-
-    <h2>Links Rápidos</h2>
-    <ul>
-        <li><a href="/register">Registrar</a></li>
-        <li><a href="/login">Login</a></li>
-        <li><a href="/posts">Listar Posts</a></li>
-        <li><a href="/addPost">Adicionar Novo Post</a></li>
-    </ul>
+        <h2>Seus Posts</h2>
+        <ul>
+            <% posts.forEach(post => { %>
+                <li><%= post.content %></li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <h1>Por favor, faça login para ver seu perfil.</h1>
+    <% } %>
 </body>
 </html>
