@@ -36,4 +36,14 @@ router.get('/addPost', authMiddleware.verifyToken, (req, res) => {
 
 router.post('/post', authMiddleware.verifyToken, PostController.addPost);
 
+router.get('/profile', authMiddleware.verifyToken, (req, res) => {
+    const userId = req.user.id;
+    db.query('SELECT * FROM posts WHERE user_id = ?', [userId], (err, results) => {
+        if (err) {
+            return res.status(500).send('Erro ao buscar posts');
+        }
+        res.render('user', { user: req.user, posts: results });
+    });
+});
+
 module.exports = router;
