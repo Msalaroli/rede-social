@@ -1,26 +1,20 @@
 const PostModel = require('../Models/PostModel');
 const UserModel = require('../Models/UserModel');
+const db = require('../Config/db');
 
 // Adicionar um post ao usuário conectado
-exports.addPost = async (req, res, next) => {
-  try {
-    const userId = req.user.id; // ID do usuário conectado a partir do JWT
-    const { content, image } = req.body;
+exports.addPost = (req, res) => {
+    const { content } = req.body;
+    const userId = req.user.id; // Assumindo que o ID do usuário está no token JWT
+    const image = req.file ? req.file.filename : null;
 
-    if (!content) {
-      return res.status(400).json({ message: 'Conteúdo da postagem é obrigatório' });
-    }
-
-    // Cria o post no banco de dados
-    const newPost = await PostModel.createPost(content, image);
-
-    // Adiciona o post à lista de postagens do usuário
-    await UserModel.addPostToUser(userId, newPost.id);
-
-    res.status(201).json({ message: 'Postagem criada com sucesso', post: newPost });
-  } catch (err) {
-    next(err);
-  }
+    const query = 'INSERT INTO posts (content, user_id, image) VALUES (?, ?, ?)';
+    db.query(query, [content, userId, image], (err, result) => {
+        if (err) {
+            return res.status(500).send('Erro ao adicionar post');
+        }
+        res.redirect('/posts'); // Redireciona de volta para a página de posts
+    });
 };
 
 // Deletar um post do usuário conectado

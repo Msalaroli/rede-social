@@ -22,7 +22,7 @@ connection.connect((err) => {
   `;
   connection.query(criarUsuario, (err, result) => {
     if (err) {
-      console.error('Erro ao criar tabela:', err);
+      console.error('Erro ao criar tabela "usuarios":', err);
       return;
     }
     console.log('Tabela "usuarios" criada com sucesso!');
@@ -32,31 +32,17 @@ connection.connect((err) => {
     CREATE TABLE IF NOT EXISTS posts (
       id INT AUTO_INCREMENT PRIMARY KEY,
       content TEXT NOT NULL,
-      image VARCHAR(255)
+      user_id INT NOT NULL,
+      image VARCHAR(255),
+      FOREIGN KEY (user_id) REFERENCES usuarios(id)
     );
   `;
   connection.query(criarPost, (err, result) => {
     if (err) {
-      console.error('Erro ao criar tabela:', err);
+      console.error('Erro ao criar tabela "posts":', err);
       return;
     }
     console.log('Tabela "posts" criada com sucesso!');
-  });
-
-  const criarUserPosts = `
-    CREATE TABLE IF NOT EXISTS user_posts (
-      user_id INT NOT NULL,
-      post_id INT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES usuarios(id),
-      FOREIGN KEY (post_id) REFERENCES posts(id)
-    );
-  `;
-  connection.query(criarUserPosts, (err, result) => {
-    if (err) {
-      console.error('Erro ao criar tabela:', err);
-      return;
-    }
-    console.log('Tabela "user_posts" criada com sucesso!');
   });
 });
 

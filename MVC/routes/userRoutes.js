@@ -6,8 +6,21 @@ const PostController = require('../Controllers/PostController');
 const path = require('path');
 const db = require('../Config/db');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
 const router = express.Router();
+
+// Configuração do multer para armazenar arquivos
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // Routes
 router.get('/register', (req, res) => {
@@ -45,7 +58,7 @@ router.get('/addPost', (req, res) => {
     });
 });
 
-router.post('/post', authMiddleware.verifyToken, PostController.addPost);
+router.post('/post', authMiddleware.verifyToken, upload.single('image'), PostController.addPost);
 
 router.get('/profile', (req, res) => {
     const token = req.headers['authorization'];

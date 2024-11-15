@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Módulo de rotas
 app.use(userRoutes);
