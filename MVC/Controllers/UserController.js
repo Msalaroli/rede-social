@@ -1,4 +1,4 @@
-const UserModel = require('../Models/UserModel');
+const UserModel = require('../models/UserModel');
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken');
 const connection = require('../Config/db');
@@ -20,6 +20,8 @@ exports.registerUser = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
 
+    console.log('dados recebidos:', { email, password, name });
+
     if (!email || !password || !name) {
       return res.status(400).json({ message: 'Nome, email e senha são obrigatórios' });
     }
@@ -35,23 +37,15 @@ exports.registerUser = async (req, res, next) => {
 
     const existingUser = await UserModel.findByEmail(email);
     if (existingUser) {
-      return res.status(409).json({ message: 'Usuário já cadastrado com este email' });
+      return res.status(400).json({ message: 'Email já está em uso' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const query = 'INSERT INTO usuarios (nome, senha, email) VALUES (?, ?, ?)'; //Query do MySQL
-    //Inserindo MANUALMENTE dados na tabela (utilizando query acima)
-    connection.query(query, [nome, hashedPassword, email], (err, result) => {
-        if (err) { //Tratamento de Erro
-            console.error('Erro ao inserir usuário:', err);
-            return res.status(500).send('Erro ao inserir usuário');
-        }
-        res.status(201).send('Usuário inserido com sucesso');
-      })
+    const newUser = await UserModel.create({ email, password: hashedPassword, name });
 
-  } catch (err) {
-    next(err);
+    res.status(201).json({ message: 'Usuário registrado com sucesso', user: newUser });
+  } catch (error) {
+    next(error);
   }
 };
 

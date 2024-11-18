@@ -15,6 +15,12 @@ app.set('views', path.join(__dirname, 'MVC', 'view'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Adicionar middleware para logar requisições
+app.use((req, res, next) => {
+  console.log(`Método: ${req.method}, URL: ${req.url}, Body:`, req.body);
+  next();
+});
+
 // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
