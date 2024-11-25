@@ -35,13 +35,14 @@ router.get('/login', (req, res) => {
 router.post('/login', UserController.loginUser);
 
 // Rotas protegidas
-router.get('/posts', authMiddleware.verifyToken, (req, res) => {
-  db.query('SELECT * FROM posts', (err, results) => {
-    if (err) {
-      return res.status(500).send('Erro ao buscar posts');
-    }
+router.get('/posts', authMiddleware.verifyToken, async (req, res) => {
+  try {
+    const [results] = await db.query('SELECT * FROM posts');
     res.render('posts', { title: 'Listar Posts', posts: results });
-  });
+  } catch (err) {
+    console.log('Erro ao buscar posts:', err);
+    return res.status(500).send('Erro ao buscar posts');
+  }
 });
 
 router.get('/addPost', authMiddleware.verifyToken, (req, res) => {
