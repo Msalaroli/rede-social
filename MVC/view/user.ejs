@@ -8,10 +8,10 @@
 <body>
     <%- include('menu') %>
     <% if (user) { %>
-        <h1>Bem-vindo, <%= user.nome %>!</h1>
+        <h1>Bem-vindo, <%= user.name %>!</h1>
 
         <h2>Adicionar Post</h2>
-        <form action="/post" method="POST">
+        <form action="/profile" method="POST">
             <textarea name="content" placeholder="Escreva seu post aqui..." required></textarea>
             <button type="submit">Adicionar Post</button>
         </form>

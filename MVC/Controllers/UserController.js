@@ -75,6 +75,9 @@ exports.loginUser = async (req, res, next) => {
       { expiresIn: '2m' }
     );
 
+    // ARMAZENAR TOKEN NO COOKIE TOKEN, ACESSIVEL SO PELO SERV. E SÓ É ENVIADO PELO HTTPS
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+
     res.status(200).json({ message: 'Login bem-sucedido', token });
   } catch (err) {
     next(err);
